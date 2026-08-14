@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#090909" />
+    <title>Rezon</title>
+    <style>
+      :root {
+        --ripple-x: 50%;
+        --ripple-y: 50%;
+        color-scheme: dark;
+        background: #090909;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+
+      body {
+        min-height: 100dvh;
+        margin: 0;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 50% 45%, #261011 0, #10090a 31%, #090909 70%);
+      }
+
+      body::before,
+      body::after {
+        content: "";
+        position: fixed;
+        inset: -50%;
+        z-index: 2;
+        pointer-events: none;
+        transition: opacity 180ms ease;
+      }
+
+      body::before {
+        opacity: 0.32;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E");
+        animation: grain 0.18s steps(2) infinite;
+      }
+
+      body::after {
+        background: repeating-linear-gradient(
+          0deg,
+          transparent 0 3px,
+          rgb(0 0 0 / 0.2) 4px
+        );
+        opacity: 0.34;
+      }
+
+      main {
+        width: min(100% - 3rem, 38rem);
+        padding: 2rem 0;
+        position: relative;
+        z-index: 3;
+        text-align: center;
+        isolation: isolate;
+        transition: opacity 180ms ease;
+      }
+
+      .background {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        opacity: 0;
+        object-fit: contain;
+        pointer-events: none;
+        transition: opacity 1.5s ease;
+      }
+
+      .void {
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+        background: #000;
+        clip-path: circle(0 at var(--ripple-x) var(--ripple-y));
+        pointer-events: none;
+      }
+
+      .void::before {
+        content: "";
+        position: fixed;
+        top: var(--ripple-y);
+        left: var(--ripple-x);
+        width: 2vmax;
+        height: 2vmax;
+        border: 1px solid rgb(244 234 229 / 0.8);
+        border-radius: 50%;
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0);
+      }
+
+      .is-leaving .void {
+        animation: blackout 1s cubic-bezier(0.55, 0, 0.15, 1) forwards;
+      }
+
+      .is-leaving .void::before {
+        animation: ripple 1s cubic-bezier(0.2, 0, 0, 1) forwards;
+      }
+
+      .is-revealed::before,
+      .is-revealed::after,
+      .is-revealed main {
+        opacity: 0;
+      }
+
+      .is-revealed .background {
+        opacity: 1;
+      }
+
+      h1 {
+        max-width: 10ch;
+        margin: 0 auto 2.4rem;
+        color: #f4eae5;
+        font-size: clamp(2.7rem, 12vw, 6.5rem);
+        font-weight: 800;
+        letter-spacing: -0.075em;
+        line-height: 0.88;
+        text-transform: uppercase;
+        text-shadow: 0.035em 0 #ff2431, -0.035em 0 #00c8d7;
+      }
+
+      .selection {
+        padding: 0 0.04em;
+        background: rgb(154 154 154 / 0.7);
+      }
+
+      a {
+        display: inline-block;
+        padding: 0.8rem 1.15rem;
+        color: #f4eae5;
+        border: 1px solid currentColor;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.22em;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: background 120ms ease, color 120ms ease, transform 120ms ease;
+      }
+
+      a:hover,
+      a:focus-visible {
+        color: #090909;
+        background: #f4eae5;
+        outline: none;
+      }
+
+      a:active {
+        animation: glitch 180ms steps(2, end);
+      }
+
+      a.is-leaving {
+        animation: disperse 1s cubic-bezier(0.55, 0, 0.15, 1) forwards;
+        pointer-events: none;
+      }
+
+      @keyframes grain {
+        0% { transform: translate(0, 0); }
+        25% { transform: translate(4%, -3%); }
+        50% { transform: translate(-2%, 5%); }
+        75% { transform: translate(5%, 2%); }
+        100% { transform: translate(-4%, -5%); }
+      }
+
+      @keyframes glitch {
+        0%, 100% { transform: translate(0); }
+        25% { transform: translate(-0.18rem, 0.08rem); }
+        50% { transform: translate(0.22rem, -0.08rem); }
+        75% { transform: translate(-0.08rem, 0); }
+      }
+
+      @keyframes blackout {
+        to { clip-path: circle(150vmax at var(--ripple-x) var(--ripple-y)); }
+      }
+
+      @keyframes ripple {
+        15% { opacity: 0.85; }
+        to {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(100);
+        }
+      }
+
+      @keyframes disperse {
+        40% {
+          letter-spacing: 0.65em;
+          transform: scale(1.08);
+        }
+        to {
+          letter-spacing: 1.4em;
+          opacity: 0;
+          transform: scale(0.65);
+          filter: blur(8px);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        body::before,
+        a:active { animation: none; }
+
+        body::before,
+        body::after,
+        main,
+        .background { transition: none; }
+
+        .is-leaving .void,
+        .is-leaving .void::before,
+        a.is-leaving { animation: none; }
+
+        .is-leaving .void {
+          clip-path: circle(150vmax at var(--ripple-x) var(--ripple-y));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <video id="background" class="background" loop playsinline preload="none">
+      <source src="media/background.mp4" type="video/mp4" />
+    </video>
+    <div class="void" aria-hidden="true"></div>
+    <main>
+      <h1><span class="selection">You</span> don’t need anything else, friend.</h1>
+      <a id="enter" href="https://www.youtube.com/@Rezon.online">Enter</a>
+    </main>
+    <script>
+      const link = document.querySelector("#enter");
+      const video = document.querySelector("#background");
+      const leaveDelay = matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1000;
+      let holdTimer;
+      let holding = false;
+
+      const playStatic = () => {
+        const context = new AudioContext();
+        const buffer = context.createBuffer(1, context.sampleRate / 5, context.sampleRate);
+        const data = buffer.getChannelData(0);
+        const source = context.createBufferSource();
+        const gain = context.createGain();
+
+        data.forEach((_, index) => { data[index] = Math.random() * 2 - 1; });
+        source.buffer = buffer;
+        gain.gain.setValueAtTime(0.06, context.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.2);
+        source.connect(gain).connect(context.destination);
+        source.start();
+        source.stop(context.currentTime + 0.2);
+      };
+
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        if (link.dataset.leaving) return;
+        link.dataset.leaving = "true";
+        const { left, top, width, height } = link.getBoundingClientRect();
+        document.documentElement.style.setProperty("--ripple-x", `${left + width / 2}px`);
+        document.documentElement.style.setProperty("--ripple-y", `${top + height / 2}px`);
+        document.body.classList.add("is-leaving");
+        link.classList.add("is-leaving");
+        try { playStatic(); }
+        finally { setTimeout(() => { window.location.assign(link.href); }, leaveDelay); }
+      });
+
+      const revealVideo = () => {
+        if (!holding) return;
+        document.body.classList.add("is-revealed");
+        video.play().catch(() => {});
+      };
+
+      const startHold = (event) => {
+        if (!event.isPrimary || event.button !== 0 || event.target.closest("#enter")) return;
+        holding = true;
+        video.load();
+        holdTimer = setTimeout(() => {
+          if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) revealVideo();
+          else video.addEventListener("canplay", revealVideo, { once: true });
+        }, 2000);
+      };
+
+      const resetVideo = () => {
+        holding = false;
+        clearTimeout(holdTimer);
+        video.removeEventListener("canplay", revealVideo);
+        document.body.classList.remove("is-revealed");
+        video.pause();
+        video.currentTime = 0;
+      };
+
+      document.addEventListener("pointerdown", startHold);
+      document.addEventListener("pointerup", resetVideo);
+      document.addEventListener("pointercancel", resetVideo);
+    </script>
+  </body>
+</html>
