@@ -1,6 +1,13 @@
 {
   "name": "rezon-home",
   "compatibility_date": "2026-08-15",
+  "workers_dev": false,
+  "routes": [
+    {
+      "pattern": "rezon.stream",
+      "custom_domain": true
+    }
+  ],
   "assets": {
     "directory": "."
   }
