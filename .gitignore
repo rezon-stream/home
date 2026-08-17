@@ -1,1 +1,4 @@
 .runtime
+.wrangler
+node_modules
+/index.html

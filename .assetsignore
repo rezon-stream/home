@@ -2,4 +2,8 @@
 .git/
 .gitignore
 .runtime/
+.wrangler/
+build.ts
+node_modules/
+src/
 wrangler.jsonc
